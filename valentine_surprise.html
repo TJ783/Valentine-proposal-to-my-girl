@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine? 💖</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: radial-gradient(1200px 600px at 10% 10%, #ffe3ec 0%, #ffd1dc 30%, #ffb3c1 55%, #ff8fab 75%, #fb6f92 100%);
+      --card: rgba(255,255,255,0.92);
+      --accent: #ff4d6d;
+      --accent-2: #ff8fab;
+      --text: #2b2b2b;
+      --shadow: 0 20px 40px rgba(0,0,0,.18);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .hearts {
+      position: fixed; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .heart {
+      position: absolute; width: 14px; height: 14px; transform: rotate(45deg);
+      background: linear-gradient(135deg, #ff4d6d, #ff8fab);
+      animation: floatUp linear infinite;
+      opacity: .85;
+    }
+    .heart::before, .heart::after {
+      content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%;
+      background: inherit;
+    }
+    .heart::before { left: -7px; }
+    .heart::after { top: -7px; }
+    @keyframes floatUp {
+      from { transform: translateY(100vh) rotate(45deg) scale(.6); opacity: .9; }
+      to   { transform: translateY(-120px) rotate(45deg) scale(1.1); opacity: 0; }
+    }
+
+    .card {
+      width: min(92vw, 760px);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 4vw, 40px);
+      text-align: center;
+      position: relative;
+      backdrop-filter: blur(6px);
+    }
+    .badge {
+      display: inline-flex; gap: 8px; align-items: center;
+      background: #fff0f4; color: #b21e35;
+      padding: 8px 12px; border-radius: 999px; font-weight: 600; font-size: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,.08);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(28px, 5vw, 56px);
+      line-height: 1.05; margin: 10px 0 12px;
+    }
+    .sub {
+      opacity: .8; max-width: 52ch; margin: 0 auto 24px;
+    }
+
+    .envelope {
+      width: 160px; height: 110px; margin: 24px auto 10px; position: relative; cursor: pointer;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.2));
+      transition: transform .2s ease;
+    }
+    .envelope:hover { transform: translateY(-2px) scale(1.02); }
+    .env-back, .env-front, .env-flap {
+      position: absolute; inset: 0; border-radius: 12px; background: #fff;
+    }
+    .env-back { background: linear-gradient(135deg, #fff, #ffe3ec); }
+    .env-front {
+      clip-path: polygon(0 0, 100% 0, 50% 60%);
+      background: linear-gradient(135deg, #ffd1dc, #ffb3c1);
+    }
+    .env-flap {
+      transform-origin: top center; transform: rotateX(0deg);
+      clip-path: polygon(0 0, 100% 0, 50% 55%);
+      background: linear-gradient(135deg, #ff8fab, #ff4d6d);
+      transition: transform .6s cubic-bezier(.2,.8,.2,1);
+    }
+    .env-open .env-flap { transform: rotateX(160deg); }
+
+    .letter {
+      position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%) translateY(20px);
+      width: 130px; height: 80px; background: #fff; border-radius: 8px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+      display: grid; place-items: center; font-weight: 700; color: #ff4d6d;
+      transition: transform .6s cubic-bezier(.2,.8,.2,1);
+    }
+    .env-open .letter { transform: translateX(-50%) translateY(-70px); }
+
+    .actions { display: flex; gap: 12px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+    button {
+      border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+    .yes { background: linear-gradient(135deg, #ff4d6d, #ff8fab); color: #fff; }
+    .no  { background: #f1f1f1; }
+    button:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    button:active { transform: translateY(0); box-shadow: 0 6px 10px rgba(0,0,0,.18); }
+
+    .hidden { display: none; }
+    .confetti {
+      position: fixed; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .confetti span {
+      position: absolute; width: 8px; height: 14px; background: linear-gradient(135deg, #ff4d6d, #ffd1dc);
+      animation: confetti 2.2s linear forwards;
+      transform-origin: center;
+    }
+    @keyframes confetti {
+      from { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      to   { transform: translateY(110vh) rotate(720deg); opacity: .8; }
+    }
+
+    footer { margin-top: 16px; font-size: 12px; opacity: .6; }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <main class="card" id="card">
+    <div class="badge">💌 A tiny surprise just for you</div>
+    <h1>Nduta (my Baeb), will you be my Valentine? 💖</h1>
+    <p class="sub">Baeb, I wanted to ask you in a way that’s a little extra—because you deserve extra. Tap the envelope 💖</p>
+
+    <div class="envelope" id="envelope" aria-label="Open the letter" role="button">
+      <div class="env-back"></div>
+      <div class="env-front"></div>
+      <div class="env-flap"></div>
+      <div class="letter">Open me</div>
+    </div>
+
+    <div class="actions hidden" id="actions">
+      <button class="yes" id="yesBtn">Yes! 💖</button>
+      <button class="no" id="noBtn">Not yet 🙈</button>
+    </div>
+
+    <p class="sub hidden" id="message"></p>
+
+    <!-- Photo gallery (replace the src values with your own image URLs) -->
+    <section class="gallery">
+      <h2>Us 💕</h2>
+      <div class="grid">
+        <img src="https://placehold.co/300x300/png?text=Your+Photo+1" alt="Our memory 1" />
+        <img src="https://placehold.co/300x300/png?text=Your+Photo+2" alt="Our memory 2" />
+        <img src="https://placehold.co/300x300/png?text=Your+Photo+3" alt="Our memory 3" />
+        <img src="https://placehold.co/300x300/png?text=Your+Photo+4" alt="Our memory 4" />
+      </div>
+      <p class="sub">Tip: Replace the image links above with your favorite photos of us.</p>
+    </section>
+    <footer>Made with love ✨</footer>
+  </main>
+
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    const hearts = document.getElementById('hearts');
+    const envelope = document.getElementById('envelope');
+    const actions = document.getElementById('actions');
+    const message = document.getElementById('message');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const confetti = document.getElementById('confetti');
+
+    // Floating hearts background
+    const spawnHearts = () => {
+      for (let i = 0; i < 18; i++) {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.animationDuration = 6 + Math.random() * 8 + 's';
+        h.style.animationDelay = Math.random() * 6 + 's';
+        h.style.opacity = 0.6 + Math.random() * 0.4;
+        hearts.appendChild(h);
+      }
+    };
+
+    const burstConfetti = () => {
+      for (let i = 0; i < 120; i++) {
+        const c = document.createElement('span');
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.top = (-10 - Math.random() * 40) + 'px';
+        c.style.animationDelay = Math.random() * .4 + 's';
+        confetti.appendChild(c);
+        setTimeout(() => c.remove(), 2400);
+      }
+    };
+
+    let opened = false;
+    envelope.addEventListener('click', () => {
+      envelope.classList.toggle('env-open');
+      opened = !opened;
+      actions.classList.toggle('hidden', !opened);
+    });
+
+    yesBtn.addEventListener('click', () => {
+      message.textContent = "Nduta, my baeb — you make my world softer, brighter, and happier just by being in it. Will you be my Valentine and let me spoil you with all the love you deserve? 💗";
+      message.classList.remove('hidden');
+      burstConfetti();
+    });
+      burstConfetti();
+    });
+
+    noBtn.addEventListener('click', () => {
+      message.textContent = "That’s okay—whenever you’re ready, I’ll be right here 😊";
+      message.classList.remove('hidden');
+    });
+
+    spawnHearts();
+  </script>
+</body>
+</html>
